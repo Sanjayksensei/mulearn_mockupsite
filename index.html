@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARNGREN | Premium Electric Vehicles & Gadgets</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00ff88;
+            --bg-dark: #0a0a0a;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* Three.js Canvas Container */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary);
+            letter-spacing: 2px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 30px;
+            font-size: 0.9rem;
+            transition: 0.3s;
+            opacity: 0.7;
+        }
+
+        .nav-links a:hover {
+            opacity: 1;
+            color: var(--primary);
+        }
+
+        /* Hero Section */
+        header {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        header h1 {
+            font-size: 4rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #fff, #555);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.6;
+            max-width: 600px;
+        }
+
+        /* Product Grid */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 20px;
+        }
+
+        .section-title {
+            margin-bottom: 50px;
+            font-size: 2rem;
+            border-left: 4px solid var(--primary);
+            padding-left: 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 20px;
+            transition: 0.4s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: contain;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .card .price {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        .card .tag {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            background: var(--primary);
+            color: black;
+            padding: 2px 8px;
+            border-radius: 4px;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .buy-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .buy-btn:hover {
+            background: var(--primary);
+            color: black;
+        }
+
+        footer {
+            padding: 50px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            opacity: 0.5;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="canvas-container"></div>
+
+    <nav>
+        <div class="logo">ARNGREN.NET</div>
+        <div class="nav-links">
+            <a href="#" onclick="filterItems('all')">All Products</a>
+            <a href="#" onclick="filterItems('vehicle')">Vehicles</a>
+            <a href="#" onclick="filterItems('toy')">Toys & RC</a>
+            <a href="#" onclick="filterItems('gadget')">Gadgets</a>
+        </div>
+    </nav>
+
+    <header>
+        <h1>Future Mobility</h1>
+        <p>Explore the most curated collection of electric vehicles, drones, and high-tech gadgets in Norway.</p>
+    </header>
+
+    <div class="container">
+        <h2 class="section-title" id="category-name">Featured Products</h2>
+        <div class="grid" id="product-grid">
+            </div>
+    </div>
+
+    <footer>
+        &copy; 2024 ARNGREN Technologies. All Rights Reserved.
+    </footer>
+
+    <script>
+        // --- PRODUCT DATA (From original screenshot) ---
+        const products = [
+            { name: "Fatbike 750W", price: "12.998,-", category: "vehicle", img: "https://via.placeholder.com/300x200/222/00ff88?text=Fatbike" },
+            { name: "El-Jeep Willy-type", price: "39.998,-", category: "vehicle", img: "https://via.placeholder.com/300x200/222/00ff88?text=El-Jeep" },
+            { name: "3-hjul El-Cargo-Bike", price: "16.998,-", category: "vehicle", img: "https://via.placeholder.com/300x200/222/00ff88?text=Cargo+Bike" },
+            { name: "RC Tank Metall 55cm", price: "2.998,-", category: "toy", img: "https://via.placeholder.com/300x200/222/00ff88?text=RC+Tank" },
+            { name: "El-Bil Comarth 4WD", price: "89.998,-", category: "vehicle", img: "https://via.placeholder.com/300x200/222/00ff88?text=Comarth+Car" },
+            { name: "Kikkert Zoom 100x", price: "2.998,-", category: "gadget", img: "https://via.placeholder.com/300x200/222/00ff88?text=Kikkert" },
+            { name: "El-Scooter 5000W", price: "29.998,-", category: "vehicle", img: "https://via.placeholder.com/300x200/222/00ff88?text=Scooter" },
+            { name: "Fotball-Trener", price: "2.698,-", category: "toy", img: "https://via.placeholder.com/300x200/222/00ff88?text=Trainer" }
+        ];
+
+        function renderProducts(filter = 'all') {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = '';
+            
+            const filtered = filter === 'all' ? products : products.filter(p => p.category === filter);
+            
+            filtered.forEach(p => {
+                grid.innerHTML += `
+                    <div class="card">
+                        <span class="tag">${p.category}</span>
+                        <img src="${p.img}" alt="${p.name}">
+                        <h3>${p.name}</h3>
+                        <p class="price">kr. ${p.price}</p>
+                        <button class="buy-btn" onclick="alert('Added ${p.name} to cart!')">Order Now</button>
+                    </div>
+                `;
+            });
+        }
+
+        function filterItems(cat) {
+            document.getElementById('category-name').innerText = cat.charAt(0).toUpperCase() + cat.slice(1) + " Selection";
+            renderProducts(cat);
+        }
+
+        renderProducts();
+
+        // --- THREE.JS BACKGROUND ---
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        // Create Particles
+        const particlesGeometry = new THREE.BufferGeometry();
+        const count = 1500;
+        const positions = new Float32Array(count * 3);
+
+        for(let i = 0; i < count * 3; i++) {
+            positions[i] = (Math.random() - 0.5) * 10;
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.015,
+            color: 0x00ff88,
+            transparent: true,
+            opacity: 0.5
+        });
+
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        camera.position.z = 3;
+
+        // Animation Loop
+        function animate() {
+            requestAnimationFrame(animate);
+            particlesMesh.rotation.y += 0.001;
+            particlesMesh.rotation.x += 0.0005;
+            renderer.render(scene, camera);
+        }
+
+        // Handle Resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
+    </script>
+</body>
+</html>
